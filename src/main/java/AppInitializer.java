@@ -22,7 +22,7 @@ public class AppInitializer extends Application {
         Scene scene = new Scene(load);
 
         primaryStage.centerOnScreen();
-        primaryStage.setTitle("FileCopy");
+        primaryStage.setTitle("Directory Copy");
         primaryStage.setScene(scene);
 
         primaryStage.show();
