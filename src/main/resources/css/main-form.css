@@ -1,0 +1,30 @@
+.btn{
+    -fx-background-color: #028ebc;
+    -fx-font-size: 14;
+    -fx-text-fill: white;
+    -fx-font-family: "Cantarell Extra Bold";
+    -fx-font-style: Bold;
+    -fx-pref-height: 37px;
+}
+
+.btn:hover{
+    -fx-background-color: #b0e0e6;
+    -fx-text-fill: black;
+
+}
+
+#btnCopy{
+    -fx-background-color: #5ed952;
+    -fx-font-size: 14;
+    -fx-text-fill: white;
+    -fx-font-family: "Cantarell Extra Bold";
+    -fx-font-style: Bold;
+    -fx-pref-height: 37px;
+
+}
+
+#btnCopy:hover{
+    -fx-background-color: #a5f8a2;
+    -fx-text-fill: black;
+}
+

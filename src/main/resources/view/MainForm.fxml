@@ -4,50 +4,55 @@
 <?import com.jfoenix.controls.JFXTextField?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="435.0" prefWidth="530.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainFormController">
+<AnchorPane prefHeight="435.0" prefWidth="530.0" stylesheets="@../css/main-form.css" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainFormController">
    <children>
-      <VBox layoutX="18.0" layoutY="13.0" prefHeight="310.0" prefWidth="499.0" spacing="30.0">
+      <VBox layoutX="18.0" layoutY="13.0" prefHeight="339.0" prefWidth="499.0" spacing="30.0">
          <children>
-            <Label text="Select source file">
+            <Label text="Select Source Directory :">
                <font>
-                  <Font name="Cantarell Regular" size="18.0" />
+                  <Font name="Cantarell Bold" size="18.0" />
                </font>
             </Label>
             <HBox prefHeight="26.0" prefWidth="461.0" spacing="30.0">
                <children>
-                  <JFXButton fx:id="btnSelectSource" onAction="#btnSelectSourceOnAction" prefWidth="82.0" ripplerFill="#2865b5" text="Select" />
-                  <JFXTextField fx:id="txtName" editable="false" labelFloat="true" prefHeight="26.0" prefWidth="237.0" promptText="Select Directory" />
-                  <JFXTextField fx:id="txtSize" editable="false" labelFloat="true" prefHeight="26.0" prefWidth="111.0" promptText="File size " />
+                  <JFXButton fx:id="btnSelectSource" onAction="#btnSelectSourceOnAction" prefWidth="82.0" ripplerFill="WHITE" styleClass="btn" text="Select">
+                     <font>
+                        <Font name="Cantarell Regular" size="13.0" />
+                     </font></JFXButton>
+                  <JFXTextField fx:id="txtName" editable="false" focusColor="BLACK" labelFloat="true" prefHeight="26.0" prefWidth="237.0" promptText="Select Directory" />
+                  <JFXTextField fx:id="txtSize" editable="false" focusColor="#028ebc" labelFloat="true" prefHeight="26.0" prefWidth="111.0" promptText="File size " />
                </children>
             </HBox>
-            <Label text="Select destination folder">
+            <Label text="Select Destination Directory :">
                <font>
-                  <Font name="Cantarell Regular" size="18.0" />
+                  <Font name="Cantarell Bold" size="18.0" />
                </font>
             </Label>
             <HBox prefHeight="26.0" prefWidth="461.0" spacing="30.0">
                <children>
-                  <JFXButton fx:id="btnSelectDestination" onAction="#btnSelectDestinationOnAction" prefWidth="82.0" ripplerFill="#2865b5" text="Select" />
-                  <JFXTextField fx:id="txtDestination" editable="false" labelFloat="true" prefHeight="26.0" prefWidth="374.0" promptText="Select Destination Path:" />
+                  <JFXButton fx:id="btnSelectDestination" onAction="#btnSelectDestinationOnAction" prefWidth="82.0" ripplerFill="WHITE" styleClass="btn" text="Select" />
+                  <JFXTextField fx:id="txtDestination" editable="false" focusColor="BLACK" labelFloat="true" prefHeight="26.0" prefWidth="374.0" promptText="Select Destination Path:" />
                </children>
             </HBox>
-            <VBox alignment="CENTER" prefHeight="93.0" prefWidth="499.0" spacing="15.0">
+            <Separator prefWidth="200.0" />
+            <VBox alignment="CENTER" prefHeight="105.0" prefWidth="499.0" spacing="18.0">
                <children>
-                  <JFXButton fx:id="btnCopy" disable="true" onAction="#btnCopyOnAction" prefHeight="36.0" prefWidth="98.0" style="-fx-background-color: #2865b5;" text="Copy" />
-                  <ProgressBar fx:id="pgrCopy" prefHeight="19.0" prefWidth="499.0" progress="0.0" style="fx-p: #2865b5;" VBox.vgrow="NEVER" />
+                  <JFXButton fx:id="btnCopy" disable="true" onAction="#btnCopyOnAction" prefHeight="29.0" prefWidth="98.0" styleClass="btnCopy" text="Copy" />
+                  <ProgressBar fx:id="pgrCopy" prefHeight="17.0" prefWidth="499.0" progress="0.0" VBox.vgrow="NEVER" />
                </children>
             </VBox>
          </children>
       </VBox>
-      <Label fx:id="lblCopySize" alignment="CENTER_RIGHT" layoutX="480.0" layoutY="323.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="18.0" prefWidth="261.0" text="0/0kB" AnchorPane.rightAnchor="14.0" />
-      <Label fx:id="lblPre" layoutX="17.0" layoutY="323.0" text="Progress : 0%" />
-      <ProgressBar fx:id="pgbTotal" layoutX="18.0" layoutY="357.0" prefHeight="20.0" prefWidth="499.0" progress="0.0" />
-      <Label fx:id="lblPreTot" layoutX="17.0" layoutY="392.0" text="Total Progress : 0%" />
-      <Label fx:id="lblCopySizeTot" alignment="CENTER_RIGHT" layoutX="255.0" layoutY="392.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="18.0" prefWidth="261.0" text="0/0kB" />
+      <Label fx:id="lblCopySize" alignment="CENTER_RIGHT" layoutX="255.0" layoutY="350.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="18.0" prefWidth="261.0" text="0/0kB" AnchorPane.rightAnchor="14.0" />
+      <Label fx:id="lblPre" layoutX="17.0" layoutY="350.0" text="Progress : 0%" />
+      <ProgressBar fx:id="pgbTotal" layoutX="18.0" layoutY="378.0" prefHeight="20.0" prefWidth="499.0" progress="0.0" />
+      <Label fx:id="lblPreTot" layoutX="17.0" layoutY="401.0" text="Total Progress : 0%" />
+      <Label fx:id="lblCopySizeTot" alignment="CENTER_RIGHT" layoutX="255.0" layoutY="401.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="18.0" prefWidth="261.0" text="0/0kB" />
    </children>
 </AnchorPane>
