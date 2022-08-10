@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="332.0" prefWidth="530.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainFormController">
+<AnchorPane prefHeight="435.0" prefWidth="530.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.MainFormController">
    <children>
       <VBox layoutX="18.0" layoutY="13.0" prefHeight="310.0" prefWidth="499.0" spacing="30.0">
          <children>
@@ -21,8 +21,8 @@
             <HBox prefHeight="26.0" prefWidth="461.0" spacing="30.0">
                <children>
                   <JFXButton fx:id="btnSelectSource" onAction="#btnSelectSourceOnAction" prefWidth="82.0" ripplerFill="#2865b5" text="Select" />
-                  <JFXTextField fx:id="txtName" editable="false" labelFloat="true" prefHeight="26.0" prefWidth="237.0" promptText="Select File :" />
-                  <JFXTextField fx:id="txtSize" editable="false" prefHeight="26.0" prefWidth="111.0" promptText="File size kB" />
+                  <JFXTextField fx:id="txtName" editable="false" labelFloat="true" prefHeight="26.0" prefWidth="237.0" promptText="Select Directory" />
+                  <JFXTextField fx:id="txtSize" editable="false" labelFloat="true" prefHeight="26.0" prefWidth="111.0" promptText="File size " />
                </children>
             </HBox>
             <Label text="Select destination folder">
@@ -33,7 +33,7 @@
             <HBox prefHeight="26.0" prefWidth="461.0" spacing="30.0">
                <children>
                   <JFXButton fx:id="btnSelectDestination" onAction="#btnSelectDestinationOnAction" prefWidth="82.0" ripplerFill="#2865b5" text="Select" />
-                  <JFXTextField fx:id="txtDestination" editable="false" labelFloat="true" prefHeight="26.0" prefWidth="374.0" promptText="Destination Path:" />
+                  <JFXTextField fx:id="txtDestination" editable="false" labelFloat="true" prefHeight="26.0" prefWidth="374.0" promptText="Select Destination Path:" />
                </children>
             </HBox>
             <VBox alignment="CENTER" prefHeight="93.0" prefWidth="499.0" spacing="15.0">
@@ -44,5 +44,10 @@
             </VBox>
          </children>
       </VBox>
+      <Label fx:id="lblCopySize" alignment="CENTER_RIGHT" layoutX="480.0" layoutY="323.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="18.0" prefWidth="261.0" text="0/0kB" AnchorPane.rightAnchor="14.0" />
+      <Label fx:id="lblPre" layoutX="17.0" layoutY="323.0" text="Progress : 0%" />
+      <ProgressBar fx:id="pgbTotal" layoutX="18.0" layoutY="357.0" prefHeight="20.0" prefWidth="499.0" progress="0.0" />
+      <Label fx:id="lblPreTot" layoutX="17.0" layoutY="392.0" text="Total Progress : 0%" />
+      <Label fx:id="lblCopySizeTot" alignment="CENTER_RIGHT" layoutX="255.0" layoutY="392.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="18.0" prefWidth="261.0" text="0/0kB" />
    </children>
 </AnchorPane>

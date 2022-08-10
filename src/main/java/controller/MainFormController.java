@@ -2,19 +2,17 @@ package controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXTextField;
-import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.concurrent.Task;
+import javafx.concurrent.WorkerStateEvent;
 import javafx.event.ActionEvent;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ProgressBar;
-import javafx.scene.control.ProgressIndicator;
+import javafx.event.EventHandler;
+import javafx.scene.control.*;
 import javafx.stage.DirectoryChooser;
-import javafx.stage.FileChooser;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.text.NumberFormat;
 
 public class MainFormController {
 
@@ -27,43 +25,54 @@ public class MainFormController {
     public ProgressBar pgrCopy;
     public JFXButton btnCopy;
     public ProgressIndicator pgrcrcl;
+    public Label lblCopySize;
+    public Label lblPre;
+    public ProgressBar pgbTotal;
+    public Label lblPreTot;
+    public Label lblCopySizeTot;
 
-    private File sourceFile;
 
     private File sourceDirectory;
 
-//    private double fileSize;
+    private double folderSize;
+
 
     private File destinationFolder;
 
-    public void btnSelectSourceOnAction(ActionEvent actionEvent) {
-//        FileChooser fileChooser = new FileChooser();
-        DirectoryChooser directoryChooser = new DirectoryChooser();
+    private int totalFileRead;
 
-//        fileChooser.setTitle("Choose source file");
+    public void btnSelectSourceOnAction(ActionEvent actionEvent) {
+
+        DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Choose directory");
 
-//        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("All Files (*.*)", "*.*"));
+        sourceDirectory = directoryChooser.showDialog(btnSelectSource.getScene().getWindow());
 
-//        sourceFile = fileChooser.showOpenDialog(btnSelectSource.getScene().getWindow());
-        sourceDirectory =directoryChooser.showDialog(btnSelectSource.getScene().getWindow());
-
-        String absolutePath = sourceDirectory.getAbsolutePath();
-//        String absolutePath = sourceFile.getAbsolutePath();
-//        fileSize = (double) (sourceFile.length());
-
+        folderSize =0;
 
         if (sourceDirectory != null) {
-            txtName.setText(absolutePath);
-            txtSize.setText(String.valueOf(sourceDirectory.length()));
+            txtName.setPromptText("Selected Directory :");
+            txtName.setText(sourceDirectory.getAbsolutePath());
+
+            File[] files = sourceDirectory.listFiles();
+            for (File file : files) {
+                folderSize+=file.length();
+            }
+
+            txtSize.setText(String.valueOf(formatNumber(folderSize/1024.00))+ " Kb");
+
+
             btnCopy.setDisable(false);
 
 
         } else {
+            txtName.setPromptText(null);
             txtName.setText("Please Select a file");
             return;
 
         }
+
+
 
 
     }
@@ -75,80 +84,137 @@ public class MainFormController {
 
         destinationFolder = directoryChooser.showDialog(btnSelectSource.getScene().getWindow());
 
+
+
         txtDestination.setText(String.valueOf(destinationFolder));
+
 
 
     }
 
     public void btnCopyOnAction(ActionEvent actionEvent) throws IOException {
 
-        new Thread(() -> {
 
-            try {
+        var task = new Task<Void>() {
+
+            @Override
+            protected Void call() throws Exception {
+
                 File copyFile = new File(destinationFolder, sourceDirectory.getName() + "-Copy");
                 if (!copyFile.exists()) {
                     copyFile.mkdir();
                 }
 
 
-
-
-
                 File[] files = sourceDirectory.listFiles();
+                totalFileRead =0;
+
                 for (File file : files) {
 
-                    FileInputStream fis = new FileInputStream(file);
+
+
 
                     File newFile = new File(copyFile, file.getName());
                     newFile.createNewFile();
+
+
+                    FileInputStream fis = new FileInputStream(file);
                     FileOutputStream fos = new FileOutputStream(newFile);
+                    BufferedInputStream bis = new BufferedInputStream(fis);
+                    BufferedOutputStream bos = new BufferedOutputStream(fos);
 
-                    double filesize = file.length();
-
-                    for (int i = 0; i < filesize; i++) {
-                        fos.write(fis.read());
+                    long filesize = file.length();
+                    int totalRead = 0;
 
 
-                        int k = i;
-                        Platform.runLater(() -> {
-                            double progress = (k / filesize);
 
-                            pgrCopy.setProgress(progress);
-                            pgrcrcl.setProgress(progress);
 
-                        });
+
+                    while (true) {
+                        byte[] buffer = new byte[1024 * 10];
+                        int read = bis.read(buffer);
+                        totalRead += read;
+                        if (read == -1) break;
+                        bos.write(buffer,0,read);
+                        updateProgress(totalRead,file.length());
+
+
+
 
 
                     }
+                    totalFileRead+=totalRead;
 
 
-                    fis.close();
-                    fos.close();
+
+                    updateProgress(totalRead,folderSize);
+
+
+
+                    bos.close();
+                    bis.close();
 
 
                 }
+                updateProgress(folderSize,folderSize);
 
 
-
-
-                Platform.runLater(() -> {
-                    txtDestination.clear();
-                    txtSize.clear();
-                    txtName.clear();
-                    new Alert(Alert.AlertType.INFORMATION, "Copied Succesfully", ButtonType.OK).showAndWait();
-
-                    pgrCopy.setProgress(0);
-
-                });
-
-
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+                return null;
             }
+        };
+
+        task.workDoneProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number curwork) {
+
+                System.out.println("curr work" + curwork);
+                System.out.println("tot work" + task.getTotalWork());
+                pgrCopy.setProgress(curwork.doubleValue() / task.getTotalWork());
+                lblPre.setText(("Progress: " + formatNumber(task.getProgress() * 100) + "%"));
+                lblCopySize.setText(formatNumber(task.getWorkDone() / 1024.0) + " / " + formatNumber(task.getTotalWork() / 1024.0) + " Kb");
+                pgbTotal.setProgress(totalFileRead/folderSize);
+                lblCopySizeTot.setText(formatNumber(totalFileRead/1024.00)+" / "+ formatNumber(folderSize/1024.00) +" Kb");
+                lblPreTot.setText(("Total Progress: " + (formatNumber((totalFileRead/folderSize)* 100))+ "%"));
+
+            }
+        });
 
 
-        }).start();
+        task.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
+            @Override
+            public void handle(WorkerStateEvent workerStateEvent) {
+
+                pgrCopy.setProgress(0);
+                lblCopySize.setText("0 / 0 Kb");
+                lblPre.setText("Progress: 0%");
+                new Alert(Alert.AlertType.INFORMATION, "Copied Successfully", ButtonType.OK).showAndWait();
+
+                pgbTotal.setProgress(0);
+
+                txtDestination.clear();
+                txtSize.clear();
+                txtName.clear();
 
 
+                lblCopySizeTot.setText("0 / 0 Kb");
+                lblPreTot.setText("Progress: 0%");
+                sourceDirectory = null;
+                destinationFolder = null;
+
+
+            }
+        });
+
+        new Thread(task).start();
+
+
+    }
+
+    private String formatNumber(double input) {
+        NumberFormat numberInstance = NumberFormat.getNumberInstance();
+        numberInstance.setGroupingUsed(true);
+        numberInstance.setMaximumFractionDigits(2);
+        numberInstance.setMinimumFractionDigits(2);
+        return numberInstance.format(input);
     }
 }
